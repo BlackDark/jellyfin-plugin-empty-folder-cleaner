@@ -1,31 +1,78 @@
-<div id="ksqConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-controller="__plugin/kodisyncqueuejs">
-    <div data-role="content">
-        <div class="content-primary">
-            <form id="ksqConfigurationForm">
-                <div class="inputContainer">
-                    <input is="emby-input" type="text" id="scanFolderPath" name="scanFolderPath" label="Folder to Scan" />
-                    <div class="fieldDescription">
-                        The absolute path to the folder to scan for subdirectories.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Hide Empty Folders</title>
+</head>
+<body>
+    <div id="hideEmptyFoldersConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="hideEmptyFoldersConfigurationForm">
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="scanFolderPath">Folder to Scan</label>
+                        <input id="scanFolderPath" name="scanFolderPath" type="text" is="emby-input" />
+                        <div class="fieldDescription">
+                            The absolute path to the folder to scan for subdirectories.
+                        </div>
                     </div>
-                </div>
-                <div class="inputContainer">
-                    <input is="emby-input" type="number" id="scanIntervalMinutes" name="scanIntervalMinutes" label="Scan Interval (minutes)" min="1" />
-                    <div class="fieldDescription">
-                        How often the scan should run (in minutes).
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="scanIntervalMinutes">Scan Interval (minutes)</label>
+                        <input id="scanIntervalMinutes" name="scanIntervalMinutes" type="number" is="emby-input" min="1" />
+                        <div class="fieldDescription">
+                            How often the scan should run (in minutes).
+                        </div>
                     </div>
-                </div>
-                <div class="inputContainer">
-                    <input is="emby-input" type="text" id="videoExtensions" name="videoExtensions" label="Video File Extensions" />
-                    <div class="fieldDescription">
-                        Comma-separated list of video file extensions (e.g. avi,mp4,mkv).
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="videoExtensions">Video File Extensions</label>
+                        <input id="videoExtensions" name="videoExtensions" type="text" is="emby-input" />
+                        <div class="fieldDescription">
+                            Comma-separated list of video file extensions (e.g. avi,mp4,mkv).
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <button is="emby-button" type="submit" id="ksqSave" class="raised button-submit block">
-                        <span>${Save}</span>
-                    </button>
-                </div>
-            </form>
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
+        <script type="text/javascript">
+            var HideEmptyFoldersConfig = {
+                pluginUniqueId: 'e3a1b2c4-1234-5678-9abc-def012345678'
+            };
+
+            document.querySelector('#hideEmptyFoldersConfigurationPage')
+                .addEventListener('pageshow', function() {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(HideEmptyFoldersConfig.pluginUniqueId).then(function (config) {
+                        document.querySelector('#scanFolderPath').value = config.ScanFolderPath || '';
+                        document.querySelector('#scanIntervalMinutes').value = config.ScanIntervalMinutes || 60;
+                        document.querySelector('#videoExtensions').value = config.VideoExtensions || 'avi,mp4,mkv,mov,wmv,flv,webm,m4v,mpg,mpeg,ts,mts,m2ts,3gp,3g2,f4v';
+                        Dashboard.hideLoadingMsg();
+                    });
+                });
+
+            document.querySelector('#hideEmptyFoldersConfigurationForm')
+                .addEventListener('submit', function(e) {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(HideEmptyFoldersConfig.pluginUniqueId).then(function (config) {
+                        config.ScanFolderPath = document.querySelector('#scanFolderPath').value || '';
+                        config.ScanIntervalMinutes = parseInt(document.querySelector('#scanIntervalMinutes').value) || 60;
+                        if (config.ScanIntervalMinutes < 1) {
+                            config.ScanIntervalMinutes = 60;
+                        }
+                        config.VideoExtensions = document.querySelector('#videoExtensions').value || 'avi,mp4,mkv,mov,wmv,flv,webm,m4v,mpg,mpeg,ts,mts,m2ts,3gp,3g2,f4v';
+
+                        ApiClient.updatePluginConfiguration(HideEmptyFoldersConfig.pluginUniqueId, config).then(function (result) {
+                            Dashboard.processPluginConfigurationUpdateResult(result);
+                        });
+                    });
+                    e.preventDefault();
+                    return false;
+                });
+        </script>
     </div>
-</div>
+</body>
+</html>

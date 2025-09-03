@@ -6,9 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Web/hideemptyfolders.html" />
-    <None Remove="Web/hideemptyfolders.js" />
     <EmbeddedResource Include="Web/hideemptyfolders.html" />
-    <EmbeddedResource Include="Web/hideemptyfolders.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Jellyfin.Data" Version="10.10-*" />
