@@ -8,6 +8,14 @@
     "owner": "jellyfin",
     "versions": [
       {
+        "changelog": "## What's Changed\r\n* Update actions/checkout action to v5 by @renovate[bot] in https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/pull/8\r\n* Update actions/setup-dotnet action to v5 by @renovate[bot] in https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/pull/10\r\n* Update fjogeleit/yaml-update-action action to v0.16.1 by @renovate[bot] in https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/pull/7\r\n* Update Kevinjil/jellyfin-plugin-repo-action digest to 2968503 by @renovate[bot] in https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/pull/5\r\n\r\n## New Contributors\r\n* @renovate[bot] made their first contribution in https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/pull/8\r\n\r\n**Full Changelog**: https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/compare/1.0.0.2...1.0.0.3",
+        "checksum": "d340354dcf3d315e3211051dd294eede",
+        "sourceUrl": "https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/releases/download/1.0.0.3/hideemptyfolders_1.0.0.3.zip",
+        "targetAbi": "10.9.0.0",
+        "timestamp": "2025-09-03T23:00:59Z",
+        "version": "1.0.0.3"
+      },
+      {
         "changelog": "**Full Changelog**: https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/compare/1.0.0.1...1.0.0.2",
         "checksum": "36ef7cdabf7af46a014a83c365462797",
         "sourceUrl": "https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/releases/download/1.0.0.2/hideemptyfolders_1.0.0.2.zip",
