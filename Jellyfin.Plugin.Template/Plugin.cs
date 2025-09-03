@@ -12,8 +12,20 @@ namespace Jellyfin.Plugin.Template;
 /// <summary>
 /// The main plugin.
 /// </summary>
+using MediaBrowser.Model.Tasks;
+using Microsoft.Extensions.Logging;
+
 public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
+    // ...existing code...
+
+    public IEnumerable<IScheduledTask> GetScheduledTasks(ILoggerFactory loggerFactory)
+    {
+        return new List<IScheduledTask>
+        {
+            new EmptyFolderCleanerTask(loggerFactory.CreateLogger<EmptyFolderCleanerTask>())
+        };
+    }
     /// <summary>
     /// Initializes a new instance of the <see cref="Plugin"/> class.
     /// </summary>

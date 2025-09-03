@@ -1,3 +1,35 @@
+# Empty Folder Cleaner Plugin
+
+This Jellyfin plugin automatically manages `.ignore` files in subfolders of a configured directory. It periodically scans each subfolder:
+
+- If video files are found (with configurable extensions), it removes any `.ignore` file.
+- If no video files are found, it creates a `.ignore` file if one does not exist.
+
+## Configuration
+
+After installing the plugin and restarting Jellyfin:
+
+1. Go to the plugin configuration page in the Jellyfin dashboard.
+2. Set the following options:
+    - **Scan Folder**: The directory to scan for empty folders.
+    - **Scan Interval (minutes)**: How often the scan should run.
+    - **Video Extensions**: Comma-separated list of video file extensions to check (e.g. `avi,mp4,mkv`).
+
+## How it works
+
+The plugin runs as a scheduled task at the configured interval. For each subfolder in the scan folder:
+
+- If any file matches the configured video extensions, `.ignore` is removed if present.
+- If no video files are found, `.ignore` is created if not present.
+
+## Troubleshooting
+
+- Ensure the scan folder exists and is accessible by the Jellyfin server.
+- Check plugin logs for errors if the task does not run as expected.
+
+## License
+
+This plugin is licensed under GPLv3, following Jellyfin plugin requirements.
 # So you want to make a Jellyfin plugin
 
 Awesome! This guide is for you. Jellyfin plugins are written using the dotnet standard framework. What that means is you can write them in any language that implements the CLI or the DLI and can compile to net8.0. The examples on this page are in C# because that is what most of Jellyfin is written in, but F#, Visual Basic, and IronPython should all be compatible once compiled.

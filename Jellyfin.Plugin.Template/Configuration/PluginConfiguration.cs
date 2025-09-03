@@ -28,11 +28,14 @@ public class PluginConfiguration : BasePluginConfiguration
     /// </summary>
     public PluginConfiguration()
     {
-        // set default options here
+        // Set default options here
         Options = SomeOptions.AnotherOption;
         TrueFalseSetting = true;
         AnInteger = 2;
         AString = "string";
+        ScanFolder = string.Empty;
+        ScanIntervalMinutes = 60;
+        VideoExtensions = "avi,mp4,mkv,mov,wmv,flv,webm,m4v,mpg,mpeg,ts,mts,m2ts,3gp,3g2,f4v";
     }
 
     /// <summary>
@@ -54,4 +57,19 @@ public class PluginConfiguration : BasePluginConfiguration
     /// Gets or sets an enum option.
     /// </summary>
     public SomeOptions Options { get; set; }
+
+    /// <summary>
+    /// Gets or sets the folder to scan for empty directories.
+    /// </summary>
+    public string ScanFolder { get; set; }
+
+    /// <summary>
+    /// Gets or sets the scan interval in minutes.
+    /// </summary>
+    public int ScanIntervalMinutes { get; set; }
+
+    /// <summary>
+    /// Gets or sets the video file extensions to check (comma-separated).
+    /// </summary>
+    public string VideoExtensions { get; set; }
 }
