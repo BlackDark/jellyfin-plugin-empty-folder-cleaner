@@ -17,7 +17,7 @@
       },
       {
         "changelog": "Nightly build\n",
-        "checksum": "f446d374da461ddb51d1d7f9bd79db6b",
+        "checksum": "e3c348be8af764d25c52e46cd05a7626",
         "sourceUrl": "https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/releases/download/nightly/hideemptyfolders_0.0.0.9000.zip",
         "targetAbi": "10.9.0.0",
         "timestamp": "2025-09-03T20:11:06Z",
