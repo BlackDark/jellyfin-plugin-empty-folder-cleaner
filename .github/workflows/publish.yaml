@@ -58,12 +58,10 @@ jobs:
         with:
           prerelease: false
           fail_on_unmatched_files: true
-          tag_name: nightly
+          tag_name: ${{ github.event.release.tag_name }}
           files: |
             _dist/*
             build.yaml
-          body: |
-            Nightly build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish Plugin Manifest
