@@ -1,18 +1,18 @@
 [
   {
     "category": "General",
-    "description": "This is a longer description that can span more than one line and include details about your plugin.\n",
+    "description": "This plugin automatically scans configured media directories and manages .ignore files based on video content presence. For directories containing video files (including in subdirectories like TV show seasons), it removes .ignore files to make them visible. For directories without video content, it creates .ignore files to hide them from library views. Supports multiple scan directories, configurable video extensions, and customizable scan intervals.\n",
     "guid": "e3a1b2c4-1234-5678-9abc-def012345678",
     "name": "HideEmptyFolders",
-    "overview": "Short description about your plugin",
+    "overview": "Automatically manages .ignore files to hide empty folders from Jellyfin library views",
     "owner": "jellyfin",
     "versions": [
       {
-        "changelog": "**Full Changelog**: https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/commits/v0.0.1",
-        "checksum": "",
-        "sourceUrl": "",
+        "changelog": "**Full Changelog**: https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/commits/1.0.0.0",
+        "checksum": "72d97931f0c5f91da8ed809f337f26e0",
+        "sourceUrl": "https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/releases/download/1.0.0.0/hideemptyfolders_1.0.0.0.zip",
         "targetAbi": "10.9.0.0",
-        "timestamp": "2025-09-03T19:54:16Z",
+        "timestamp": "2025-09-03T21:18:40Z",
         "version": "1.0.0.0"
       },
       {
