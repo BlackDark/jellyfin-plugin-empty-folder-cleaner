@@ -28,7 +28,7 @@ jobs:
         with:
           valueFile: "build.yaml"
           propertyPath: "version"
-          value: "0.0.0.9000"
+          value: "0.0.0.${{ github.run_number }}"
           commitChange: false
           updateFile: true
 
@@ -36,7 +36,7 @@ jobs:
         uses: oddstr13/jellyfin-plugin-repository-manager@9497a0a499416cc572ed2e07a391d9f943a37b4d # v1.1.1
         id: jprm
         with:
-          version: "0.0.0.9000"
+          version: "0.0.0.${{ github.run_number }}"
           verbosity: debug
           path: .
           dotnet-target: "net8.0"
