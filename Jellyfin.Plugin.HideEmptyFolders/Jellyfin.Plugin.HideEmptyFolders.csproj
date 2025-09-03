@@ -5,10 +5,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Web/hideemptyfolders.html" />
-    <None Remove="Web/hideemptyfolders.js" />
-    <EmbeddedResource Include="Web/hideemptyfolders.html" />
-    <EmbeddedResource Include="Web/hideemptyfolders.js" />
+    <None Remove="Configuration/hideemptyfolders.html" />
+    <None Remove="Configuration/hideemptyfolders.js" />
+    <EmbeddedResource Include="Configuration/hideemptyfolders.html" />
+    <EmbeddedResource Include="Configuration/hideemptyfolders.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Jellyfin.Data" Version="10.10-*" />

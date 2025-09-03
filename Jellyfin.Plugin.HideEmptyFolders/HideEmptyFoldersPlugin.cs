@@ -50,13 +50,13 @@ namespace Jellyfin.Plugin.HideEmptyFolders
             {
                 new PluginPageInfo
                 {
-                    Name = "HideEmptyFolders",
-                    EmbeddedResourcePath = GetType().Namespace + ".Web.hideemptyfolders.html",
+                    Name = "hideemptyfolders",
+                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.hideemptyfolders.html",
                 },
                 new PluginPageInfo
                 {
                     Name = "hideemptyfolders.js",
-                    EmbeddedResourcePath = GetType().Namespace + ".Web.hideemptyfolders.js"
+                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.hideemptyfolders.js"
                 }
             };
         }
