@@ -12,41 +12,60 @@ permissions:
 
 jobs:
   build:
-    uses: ./.github/workflows/build-dep.yaml
-    with:
-      dotnet-version: "8.0.*"
-      dotnet-target: "net8.0"
-  upload:
     runs-on: ubuntu-latest
-    needs:
-      - build
+
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v5
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
         with:
-          name: build-artifact
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Clean
+        run: dotnet clean
+      - name: Build Dotnet
+        run: dotnet build --no-restore --warnaserror
+      - name: "Flag as nightly in build.yaml"
+        uses: fjogeleit/yaml-update-action@v0.10.0
+        with:
+          valueFile: "build.yaml"
+          propertyPath: "version"
+          value: "${{ github.event.release.tag_name }}"
+          commitChange: false
+          updateFile: true
+
+      - name: "JPRM: Build"
+        uses: oddstr13/jellyfin-plugin-repository-manager@9497a0a499416cc572ed2e07a391d9f943a37b4d # v1.1.1
+        id: jprm
+        with:
+          version: "${{ github.event.release.tag_name }}"
+          dotnet-target: "net8.0"
+          output: _dist
+
       - name: Prepare GitHub Release assets
         run: |-
-          for file in ./*; do
+          pushd _dist
+          for file in ./*.zip; do
             md5sum ${file#./} >> ${file%.*}.md5
             sha256sum ${file#./} >> ${file%.*}.sha256
           done
           ls -l
+          popd
       - name: Publish output artifacts
         id: publish-assets
         uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
           prerelease: false
           fail_on_unmatched_files: true
-          tag_name: ${{ github.event.release.tag_name }}
-          files: ./*
+          tag_name: nightly
+          files: |
+            _dist/*
+            build.yaml
+          body: |
+            Nightly build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  generate:
-    runs-on: ubuntu-latest
-    needs:
-      - upload
-    steps:
       - name: Publish Plugin Manifest
         uses: Kevinjil/jellyfin-plugin-repo-action@a7832ecc44c6b1a45d531970f6647b8682b005b8
         with:
