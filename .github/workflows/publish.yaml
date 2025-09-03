@@ -30,7 +30,7 @@ jobs:
           ls -l
       - name: Publish output artifacts
         id: publish-assets
-        uses: softprops/action-gh-release@50195ba7f6f93d1ac97ba8332a178e008ad176aa
+        uses: softprops/action-gh-release@fbadcc90e88ecface60a0a0d123795b784ceb239
         with:
           prerelease: false
           fail_on_unmatched_files: true
