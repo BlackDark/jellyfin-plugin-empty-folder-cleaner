@@ -1,11 +1,28 @@
 [
   {
-    "category": "File Management",
-    "description": "This plugin hides empty folders from the file browser.",
+    "category": "General",
+    "description": "This is a longer description that can span more than one line and include details about your plugin.\n",
     "guid": "e3a1b2c4-1234-5678-9abc-def012345678",
-    "name": "Hide Empty Folders",
-    "overview": "Hide empty folders",
-    "owner": "blackdark",
-    "versions": []
+    "name": "HideEmptyFolders",
+    "overview": "Short description about your plugin",
+    "owner": "jellyfin",
+    "versions": [
+      {
+        "changelog": "**Full Changelog**: https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/commits/v0.0.1",
+        "checksum": "",
+        "sourceUrl": "",
+        "targetAbi": "10.9.0.0",
+        "timestamp": "2025-09-03T19:54:16Z",
+        "version": "1.0.0.0"
+      },
+      {
+        "changelog": "Nightly build\n",
+        "checksum": "f446d374da461ddb51d1d7f9bd79db6b",
+        "sourceUrl": "https://github.com/BlackDark/jellyfin-plugin-empty-folder-cleaner/releases/download/nightly/hideemptyfolders_0.0.0.9000.zip",
+        "targetAbi": "10.9.0.0",
+        "timestamp": "2025-09-03T20:11:06Z",
+        "version": "0.0.0.9000"
+      }
+    ]
   }
 ]
