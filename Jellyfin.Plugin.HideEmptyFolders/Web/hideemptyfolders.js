@@ -4,7 +4,23 @@ const hideEmptyFoldersConfigurationPage = {
     loadConfiguration: (page) => {
         Dashboard.showLoadingMsg();
         ApiClient.getPluginConfiguration(hideEmptyFoldersConfigurationPage.pluginUniqueId).then(function (config) {
-            page.querySelector("#scanFolderPath").value = config.ScanFolderPath || "";
+            // Handle multiple folder paths - combine legacy single path with new array
+            var allPaths = [];
+
+            // Migrate legacy single path if it exists
+            if (config.ScanFolderPath && config.ScanFolderPath.trim()) {
+                allPaths.push(config.ScanFolderPath.trim());
+            }
+
+            // Add paths from the array
+            if (config.ScanFolderPaths && config.ScanFolderPaths.length > 0) {
+                allPaths = allPaths.concat(config.ScanFolderPaths);
+            }
+
+            // Remove duplicates and display
+            var uniquePaths = [...new Set(allPaths)];
+            page.querySelector("#scanFolderPaths").value = uniquePaths.join("\n");
+
             page.querySelector("#scanIntervalMinutes").value = config.ScanIntervalMinutes || 60;
             page.querySelector("#videoExtensions").value = config.VideoExtensions || "avi,mp4,mkv,mov,wmv,flv,webm,m4v,mpg,mpeg,ts,mts,m2ts,3gp,3g2,f4v";
             Dashboard.hideLoadingMsg();
@@ -14,7 +30,16 @@ const hideEmptyFoldersConfigurationPage = {
     saveConfiguration: (page) => {
         Dashboard.showLoadingMsg();
         ApiClient.getPluginConfiguration(hideEmptyFoldersConfigurationPage.pluginUniqueId).then(function (config) {
-            config.ScanFolderPath = page.querySelector("#scanFolderPath").value || "";
+            // Clear legacy single folder path and use only the array
+            config.ScanFolderPath = "";
+
+            // Handle multiple folder paths
+            var scanFolderPathsText = page.querySelector("#scanFolderPaths").value || "";
+            config.ScanFolderPaths = scanFolderPathsText
+                .split("\n")
+                .map((path) => path.trim())
+                .filter((path) => path.length > 0);
+
             config.ScanIntervalMinutes = parseInt(page.querySelector("#scanIntervalMinutes").value) || 60;
             if (config.ScanIntervalMinutes < 1) {
                 config.ScanIntervalMinutes = 60;

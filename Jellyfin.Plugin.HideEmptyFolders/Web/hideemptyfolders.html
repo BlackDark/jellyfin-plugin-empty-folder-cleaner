@@ -5,14 +5,14 @@
         <title>Hide Empty Folders</title>
     </head>
     <body>
-        <div id="hideEmptyFoldersConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button" data-controller="__plugin/HideEmptyFolders.js">
+        <div id="hideEmptyFoldersConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-textarea" data-controller="__plugin/hideemptyfolders.js">
             <div data-role="content">
                 <div class="content-primary">
                     <form id="hideEmptyFoldersConfigurationForm">
                         <div class="inputContainer">
-                            <label class="inputLabel inputLabelUnfocused" for="scanFolderPath">Folder to Scan</label>
-                            <input id="scanFolderPath" name="scanFolderPath" type="text" is="emby-input" />
-                            <div class="fieldDescription">The absolute path to the folder to scan for subdirectories.</div>
+                            <label class="inputLabel inputLabelUnfocused" for="scanFolderPaths">Folders to Scan</label>
+                            <textarea id="scanFolderPaths" name="scanFolderPaths" is="emby-textarea" rows="5"></textarea>
+                            <div class="fieldDescription">Enter folder paths to scan, one per line. Each folder will be scanned for subdirectories containing video files.</div>
                         </div>
                         <div class="inputContainer">
                             <label class="inputLabel inputLabelUnfocused" for="scanIntervalMinutes">Scan Interval (minutes)</label>

@@ -30,14 +30,37 @@ namespace Jellyfin.Plugin.HideEmptyFolders.ScheduledTasks
         public Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
         {
             var config = HideEmptyFoldersPlugin.Instance.Configuration;
-            if (string.IsNullOrWhiteSpace(config.ScanFolderPath) || !Directory.Exists(config.ScanFolderPath))
+
+            // Build list of folders to scan
+            var scanFolders = new List<string>();
+
+            // Add paths from the array
+            if (config.ScanFolderPaths != null && config.ScanFolderPaths.Count > 0)
             {
-                _logger.LogWarning($"ScanFolderPath is not set or does not exist: {config.ScanFolderPath}");
+                scanFolders.AddRange(config.ScanFolderPaths.Where(path => !string.IsNullOrWhiteSpace(path) && Directory.Exists(path)));
+            }
+
+            if (scanFolders.Count == 0)
+            {
+                _logger.LogWarning("No valid scan folders configured or found. Please configure folder paths in the plugin settings.");
                 return Task.CompletedTask;
             }
 
             var videoExtensions = config.VideoExtensions.Split(',').Select(e => e.Trim().ToLowerInvariant()).ToArray();
-            var subDirs = Directory.GetDirectories(config.ScanFolderPath);
+
+            foreach (var scanFolder in scanFolders)
+            {
+                _logger.LogInformation($"Processing scan folder: {scanFolder}");
+                ProcessScanFolder(scanFolder, videoExtensions);
+            }
+
+            _logger.LogInformation("Processing complete");
+            return Task.CompletedTask;
+        }
+
+        private void ProcessScanFolder(string scanFolderPath, string[] videoExtensions)
+        {
+            var subDirs = Directory.GetDirectories(scanFolderPath);
             foreach (var dir in subDirs)
             {
                 if (!Directory.Exists(dir))
@@ -48,7 +71,7 @@ namespace Jellyfin.Plugin.HideEmptyFolders.ScheduledTasks
                 var dirName = Path.GetFileName(dir);
                 _logger.LogInformation($"Processing directory: {dirName}");
 
-                bool hasVideo = Directory.EnumerateFiles(dir, "*.*", SearchOption.TopDirectoryOnly)
+                bool hasVideo = Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories)
                     .Any(f => videoExtensions.Any(ext => f.EndsWith($".{ext}", StringComparison.OrdinalIgnoreCase)));
 
                 var ignoreFile = Path.Combine(dir, ".ignore");
@@ -77,9 +100,6 @@ namespace Jellyfin.Plugin.HideEmptyFolders.ScheduledTasks
                     }
                 }
             }
-
-            _logger.LogInformation("Processing complete");
-            return Task.CompletedTask;
         }
 
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()
