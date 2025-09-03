@@ -4,13 +4,18 @@ guid: "e3a1b2c4-1234-5678-9abc-def012345678"
 version: "1.0.0.0"
 targetAbi: "10.9.0.0"
 framework: "net8.0"
-overview: "Short description about your plugin"
+overview: "Automatically manages .ignore files to hide empty folders from Jellyfin library views"
 description: >
-  This is a longer description that can span more than one
-  line and include details about your plugin.
+  This plugin automatically scans configured media directories and manages .ignore files
+  based on video content presence. For directories containing video files (including in
+  subdirectories like TV show seasons), it removes .ignore files to make them visible.
+  For directories without video content, it creates .ignore files to hide them from
+  library views. Supports multiple scan directories, configurable video extensions,
+  and customizable scan intervals.
 category: "General"
 owner: "jellyfin"
 artifacts:
   - "Jellyfin.Plugin.HideEmptyFolders.dll"
 changelog: >
-  changelog
+  v1.0.0.0: Initial release with recursive video scanning, multiple folder support,
+  and automatic .ignore file management for cleaner library organization.
