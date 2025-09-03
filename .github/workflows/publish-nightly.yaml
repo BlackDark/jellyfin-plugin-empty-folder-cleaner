@@ -21,6 +21,8 @@ jobs:
           dotnet-version: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
+      - name: Clean
+        run: dotnet clean
       - name: Build Dotnet
         run: dotnet build --no-restore --warnaserror
       - name: "Flag as nightly in build.yaml"
