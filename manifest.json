@@ -1,0 +1,11 @@
+[
+  {
+    "category": "File Management",
+    "description": "This plugin hides empty folders from the file browser.",
+    "guid": "e3a1b2c4-1234-5678-9abc-def012345678",
+    "name": "Hide Empty Folders",
+    "overview": "Hide empty folders",
+    "owner": "blackdark",
+    "versions": []
+  }
+]
