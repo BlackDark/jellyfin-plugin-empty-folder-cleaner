@@ -26,7 +26,7 @@ jobs:
       - name: Build Dotnet
         run: dotnet build --no-restore --warnaserror
       - name: "Flag as nightly in build.yaml"
-        uses: fjogeleit/yaml-update-action@v0.10.0
+        uses: fjogeleit/yaml-update-action@a77606cff437e552914df4f1db9dce1659e0b3f5 # v0.10.0
         with:
           valueFile: "build.yaml"
           propertyPath: "version"
