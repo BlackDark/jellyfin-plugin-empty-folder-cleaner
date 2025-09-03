@@ -1,0 +1,25 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.HideEmptyFolders", "Jellyfin.Plugin.HideEmptyFolders\Jellyfin.Plugin.HideEmptyFolders.csproj", "{0DA59917-A0D1-443D-B90E-103AC72FB16E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DA59917-A0D1-443D-B90E-103AC72FB16E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DA59917-A0D1-443D-B90E-103AC72FB16E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DA59917-A0D1-443D-B90E-103AC72FB16E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DA59917-A0D1-443D-B90E-103AC72FB16E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12F9CDB3-0479-4663-8B55-21D07FE0AB83}
+	EndGlobalSection
+EndGlobal

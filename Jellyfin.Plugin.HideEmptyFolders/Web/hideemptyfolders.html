@@ -1,0 +1,31 @@
+<div id="ksqConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-controller="__plugin/kodisyncqueuejs">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="ksqConfigurationForm">
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="scanFolderPath" name="scanFolderPath" label="Folder to Scan" />
+                    <div class="fieldDescription">
+                        The absolute path to the folder to scan for subdirectories.
+                    </div>
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="number" id="scanIntervalMinutes" name="scanIntervalMinutes" label="Scan Interval (minutes)" min="1" />
+                    <div class="fieldDescription">
+                        How often the scan should run (in minutes).
+                    </div>
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="videoExtensions" name="videoExtensions" label="Video File Extensions" />
+                    <div class="fieldDescription">
+                        Comma-separated list of video file extensions (e.g. avi,mp4,mkv).
+                    </div>
+                </div>
+                <div>
+                    <button is="emby-button" type="submit" id="ksqSave" class="raised button-submit block">
+                        <span>${Save}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
