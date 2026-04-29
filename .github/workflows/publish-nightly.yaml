@@ -26,7 +26,7 @@ jobs:
       - name: Build Dotnet
         run: dotnet build --no-restore --warnaserror
       - name: "Flag as nightly in build.yaml"
-        uses: fjogeleit/yaml-update-action@04ff6ec06568fd21197db746472e36cc425de850 # v0.16.1
+        uses: fjogeleit/yaml-update-action@dffe9a5223d84653c13374032382f6bb5de8e5ef # v0.17.0
         with:
           valueFile: "build.yaml"
           propertyPath: "version"
@@ -55,7 +55,7 @@ jobs:
           popd
       - name: Publish output artifacts
         id: publish-assets
-        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           prerelease: false
           fail_on_unmatched_files: true
