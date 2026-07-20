@@ -15,6 +15,6 @@ on:
 
 jobs:
   call:
-    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/scan-codeql.yaml@master
+    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/scan-codeql.yaml@91aa56610cd3321f8897bbe2657c1743b3df3436 # master
     with:
       repository-name: jellyfin/jellyfin-plugin-template
