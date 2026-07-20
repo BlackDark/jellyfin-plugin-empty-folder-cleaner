@@ -111,7 +111,7 @@ namespace Jellyfin.Plugin.HideEmptyFolders.ScheduledTasks
             {
                 new TaskTriggerInfo
                 {
-                    Type = TaskTriggerInfo.TriggerInterval,
+                    Type = TaskTriggerInfoType.IntervalTrigger,
                     IntervalTicks = TimeSpan.FromMinutes(interval).Ticks
                 }
             };

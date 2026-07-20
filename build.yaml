@@ -3,7 +3,7 @@ name: "HideEmptyFolders"
 guid: "e3a1b2c4-1234-5678-9abc-def012345678"
 version: "1.0.0.2"
 targetAbi: "10.9.0.0"
-framework: "net8.0"
+framework: "net9.0"
 overview: "Automatically manages .ignore files to hide empty folders from Jellyfin library views"
 description: >
   This plugin automatically scans configured media directories and manages .ignore files

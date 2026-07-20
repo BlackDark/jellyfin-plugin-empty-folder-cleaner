@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Clean
@@ -41,7 +41,7 @@ jobs:
           version: "0.0.0.${{ github.run_number }}"
           verbosity: debug
           path: .
-          dotnet-target: "net8.0"
+          dotnet-target: "net9.0"
           output: _dist
 
       - name: Prepare GitHub Release assets
