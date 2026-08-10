@@ -5,25 +5,31 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
-using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HideEmptyFolders
 {
-    public class HideEmptyFoldersPlugin : BasePlugin<PluginConfiguration>, IHasWebPages, IDisposable
+    public sealed class HideEmptyFoldersPlugin : BasePlugin<PluginConfiguration>, IHasWebPages, IDisposable
     {
+        private readonly IgnoreFileCache _ifs;
+
         public HideEmptyFoldersPlugin(
             IApplicationPaths applicationPaths,
             IXmlSerializer xmlSerializer,
-            ILoggerFactory loggerFactory)
+            IgnoreFileCache ifs)
             : base(applicationPaths, xmlSerializer)
         {
             Instance = this;
-
-            var logger = loggerFactory.CreateLogger<HideEmptyFoldersPlugin>();
-            logger.LogInformation("HideEmptyFolders is starting...");
+            _ifs = ifs;
+            ConfigurationChanged += OnConfigurationChanged;
         }
 
-        public override Guid Id => new Guid("e3a1b2c4-1234-5678-9abc-def012345678");
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <value>The instance.</value>
+        public static HideEmptyFoldersPlugin? Instance { get; private set; }
+
+        public override Guid Id => new ("e3a1b2c4-1234-5678-9abc-def012345678");
 
         /// <summary>
         /// Gets the name of the plugin.
@@ -38,16 +44,10 @@ namespace Jellyfin.Plugin.HideEmptyFolders
         public override string Description
             => "Automatically hides empty folders by creating/removing .ignore files based on video file presence.";
 
-        /// <summary>
-        /// Gets the instance.
-        /// </summary>
-        /// <value>The instance.</value>
-        public static HideEmptyFoldersPlugin Instance { get; private set; }
-
         public IEnumerable<PluginPageInfo> GetPages()
         {
-            return new[]
-            {
+            return
+            [
                 new PluginPageInfo
                 {
                     Name = "hideemptyfolders",
@@ -58,20 +58,12 @@ namespace Jellyfin.Plugin.HideEmptyFolders
                     Name = "hideemptyfolders.js",
                     EmbeddedResourcePath = GetType().Namespace + ".Configuration.hideemptyfolders.js"
                 }
-            };
+            ];
         }
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => ConfigurationChanged -= OnConfigurationChanged;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-            }
-        }
+        private void OnConfigurationChanged(object? sender, BasePluginConfiguration e)
+            => _ifs.Invalidate();
     }
 }

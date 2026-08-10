@@ -21,7 +21,6 @@ const hideEmptyFoldersConfigurationPage = {
             var uniquePaths = [...new Set(allPaths)];
             page.querySelector("#scanFolderPaths").value = uniquePaths.join("\n");
 
-            page.querySelector("#scanIntervalMinutes").value = config.ScanIntervalMinutes || 60;
             page.querySelector("#videoExtensions").value = config.VideoExtensions || "avi,mp4,mkv,mov,wmv,flv,webm,m4v,mpg,mpeg,ts,mts,m2ts,3gp,3g2,f4v";
             Dashboard.hideLoadingMsg();
         });
@@ -40,10 +39,6 @@ const hideEmptyFoldersConfigurationPage = {
                 .map((path) => path.trim())
                 .filter((path) => path.length > 0);
 
-            config.ScanIntervalMinutes = parseInt(page.querySelector("#scanIntervalMinutes").value) || 60;
-            if (config.ScanIntervalMinutes < 1) {
-                config.ScanIntervalMinutes = 60;
-            }
             config.VideoExtensions = page.querySelector("#videoExtensions").value || "avi,mp4,mkv,mov,wmv,flv,webm,m4v,mpg,mpeg,ts,mts,m2ts,3gp,3g2,f4v";
 
             ApiClient.updatePluginConfiguration(hideEmptyFoldersConfigurationPage.pluginUniqueId, config).then(function (result) {
