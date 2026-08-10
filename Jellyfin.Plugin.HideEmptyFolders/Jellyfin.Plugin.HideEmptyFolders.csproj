@@ -3,6 +3,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>SA1010,SA1011,SA1513</NoWarn>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Configuration/hideemptyfolders.html" />

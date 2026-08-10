@@ -1,23 +1,27 @@
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.HideEmptyFolders.Configuration;
 using MediaBrowser.Model.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HideEmptyFolders.ScheduledTasks
 {
-    public class IgnoreFileTask : IScheduledTask
+    public class IgnoreFileTask(ILogger<IgnoreFileTask> logger, IgnoreFileCache ifs) : IScheduledTask
     {
-        private readonly ILogger<IgnoreFileTask> _logger;
-
-        public IgnoreFileTask(ILogger<IgnoreFileTask> logger)
+        private static readonly EnumerationOptions _videoSearchOptions = new ()
         {
-            _logger = logger;
-        }
+            RecurseSubdirectories = true,
+            MatchType = MatchType.Simple,
+            AttributesToSkip = FileAttributes.ReparsePoint, // TODO: make configurable
+            IgnoreInaccessible = false,
+            MaxRecursionDepth = 5, // TODO: make configurable
+            ReturnSpecialDirectories = false
+        };
+
+        private readonly bool _isDebugLogEnabled = logger.IsEnabled(LogLevel.Debug);
 
         public string Name => "Ignore File Directory Scan";
 
@@ -29,92 +33,114 @@ namespace Jellyfin.Plugin.HideEmptyFolders.ScheduledTasks
 
         public Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            var config = HideEmptyFoldersPlugin.Instance.Configuration;
+            var (videoExtensions, scanFolders) =
+                ifs.GetOrBuild(HideEmptyFoldersPlugin.Instance!.Configuration);
 
-            // Build list of folders to scan
-            var scanFolders = new List<string>();
-
-            // Add paths from the array
-            if (config.ScanFolderPaths != null && config.ScanFolderPaths.Count > 0)
+            if (videoExtensions.Count == 0)
             {
-                scanFolders.AddRange(config.ScanFolderPaths.Where(path => !string.IsNullOrWhiteSpace(path) && Directory.Exists(path)));
-            }
-
-            if (scanFolders.Count == 0)
-            {
-                _logger.LogWarning("No valid scan folders configured or found. Please configure folder paths in the plugin settings.");
+                logger.LogWarning("No video extensions configured");
                 return Task.CompletedTask;
             }
 
-            var videoExtensions = config.VideoExtensions.Split(',').Select(e => e.Trim().ToLowerInvariant()).ToArray();
+            if (scanFolders.Length == 0)
+            {
+                logger.LogWarning("No valid scan folders configured or found. Please configure folder paths in the plugin settings");
+                return Task.CompletedTask;
+            }
+
+            int totalCount = scanFolders.Length;
+            int completed = 0;
 
             foreach (var scanFolder in scanFolders)
             {
-                _logger.LogInformation($"Processing scan folder: {scanFolder}");
-                ProcessScanFolder(scanFolder, videoExtensions);
+                logger.LogInformation("Processing scan folder: {ScanFolder}", scanFolder);
+                ProcessScanFolder(scanFolder, videoExtensions, cancellationToken);
+
+                progress?.Report(100d * ++completed / totalCount);
             }
 
-            _logger.LogInformation("Processing complete");
+            logger.LogInformation("Processing complete");
             return Task.CompletedTask;
         }
 
-        private void ProcessScanFolder(string scanFolderPath, string[] videoExtensions)
+        private void ProcessScanFolder(string scanFolderPath, FrozenSet<string> videoExtensions, CancellationToken cancellationToken)
         {
-            var subDirs = Directory.GetDirectories(scanFolderPath);
+            IEnumerable<string> subDirs;
+
+            try
+            {
+                subDirs = Directory.EnumerateDirectories(scanFolderPath);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to enumerate directories in {ScanFolder}", scanFolderPath);
+                return;
+            }
+
             foreach (var dir in subDirs)
             {
-                if (!Directory.Exists(dir))
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (_isDebugLogEnabled)
                 {
-                    continue;
+                    logger.LogDebug("Processing directory: {Dir}", dir);
                 }
 
-                var dirName = Path.GetFileName(dir);
-                _logger.LogInformation($"Processing directory: {dirName}");
-
-                bool hasVideo = Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories)
-                    .Any(f => videoExtensions.Any(ext => f.EndsWith($".{ext}", StringComparison.OrdinalIgnoreCase)));
-
-                var ignoreFile = Path.Combine(dir, ".ignore");
-                if (hasVideo)
+                try
                 {
-                    if (File.Exists(ignoreFile))
+                    var hasVideo = false;
+                    foreach (var f in Directory.EnumerateFiles(dir, "*.*", _videoSearchOptions))
                     {
-                        File.Delete(ignoreFile);
-                        _logger.LogInformation($"  Removed .ignore file (video files found)");
+                        if (videoExtensions.Contains(Path.GetExtension(f)))
+                        {
+                            hasVideo = true;
+                            break;
+                        }
+                    }
+
+                    var ignoreFile = Path.Combine(dir, ".ignore");
+                    if (hasVideo)
+                    {
+                        if (File.Exists(ignoreFile))
+                        {
+                            File.Delete(ignoreFile);
+                            logger.LogInformation("Removed .ignore file from {DirName} (video files found)", Path.GetFileName(dir));
+                        }
+                        else if (_isDebugLogEnabled)
+                        {
+                            logger.LogDebug("  No .ignore file to remove (video files found)");
+                        }
                     }
                     else
                     {
-                        _logger.LogInformation($"  No .ignore file to remove (video files found)");
+                        if (!File.Exists(ignoreFile))
+                        {
+                            File.WriteAllText(ignoreFile, string.Empty);
+                            logger.LogInformation("Created .ignore file in {DirName} (no video files found)", Path.GetFileName(dir));
+                        }
+                        else if (_isDebugLogEnabled)
+                        {
+                            logger.LogDebug("  .ignore file already exists (no video files found)");
+                        }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    if (!File.Exists(ignoreFile))
-                    {
-                        File.WriteAllText(ignoreFile, string.Empty);
-                        _logger.LogInformation($"  Created .ignore file (no video files found)");
-                    }
-                    else
-                    {
-                        _logger.LogInformation($"  .ignore file already exists (no video files found)");
-                    }
+                    logger.LogWarning(ex, "Failed to process directory {Dir}", dir);
                 }
             }
         }
 
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()
         {
-            var config = HideEmptyFoldersPlugin.Instance.Configuration;
-            var interval = config.ScanIntervalMinutes > 0 ? config.ScanIntervalMinutes : 60;
-
-            return new[]
-            {
+            return
+            [
                 new TaskTriggerInfo
                 {
                     Type = TaskTriggerInfoType.IntervalTrigger,
-                    IntervalTicks = TimeSpan.FromMinutes(interval).Ticks
+                    IntervalTicks = TimeSpan.FromHours(1).Ticks
                 }
-            };
+            ];
         }
     }
 }
