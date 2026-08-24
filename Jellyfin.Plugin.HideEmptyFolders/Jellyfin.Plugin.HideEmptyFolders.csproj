@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>SA1010,SA1011,SA1513</NoWarn>
@@ -13,8 +13,8 @@
     <EmbeddedResource Include="Configuration/hideemptyfolders.js" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Jellyfin.Data" Version="10.11.11" />
-    <PackageReference Include="Jellyfin.Controller" Version="10.11.11" />
+    <PackageReference Include="Jellyfin.Data" Version="12.0.0-rc5" />
+    <PackageReference Include="Jellyfin.Controller" Version="12.0.0-rc5" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SerilogAnalyzer" Version="0.15.0" PrivateAssets="All" />
