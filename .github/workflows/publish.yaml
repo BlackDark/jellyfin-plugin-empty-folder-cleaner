@@ -40,7 +40,7 @@ jobs:
         id: jprm
         with:
           version: "${{ github.event.release.tag_name }}"
-          dotnet-target: "net9.0"
+          dotnet-target: "net10.0"
           output: _dist
 
       - name: Prepare GitHub Release assets

@@ -41,7 +41,7 @@ jobs:
           version: "0.0.0.${{ github.run_number }}"
           verbosity: debug
           path: .
-          dotnet-target: "net9.0"
+          dotnet-target: "net10.0"
           output: _dist
 
       - name: Prepare GitHub Release assets
