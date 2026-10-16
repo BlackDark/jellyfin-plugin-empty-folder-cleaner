@@ -14,6 +14,6 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
-    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/sync-labels.yaml@5ebf9f9455736773ab6f94cdb19fb903ece41b83 # master
+    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/sync-labels.yaml@052bc316730c81b2ff27f971c0f8455d4cf05031 # master
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
