@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/build.yaml@5ebf9f9455736773ab6f94cdb19fb903ece41b83
+    with:
+      dotnet-version: "10.0.x"
+      dotnet-target: "net10.0"
+
+  test:
+    uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yaml@5ebf9f9455736773ab6f94cdb19fb903ece41b83
+
+  check:
+    if: always()
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1

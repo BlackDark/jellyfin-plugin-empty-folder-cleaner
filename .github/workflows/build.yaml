@@ -1,16 +1,7 @@
 name: '🏗️ Build Plugin'
 
 on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - '**/*.md'
-  pull_request:
-    branches:
-      - master
-    paths-ignore:
-      - '**/*.md'
+  workflow_call:
   workflow_dispatch:
 
 jobs:
