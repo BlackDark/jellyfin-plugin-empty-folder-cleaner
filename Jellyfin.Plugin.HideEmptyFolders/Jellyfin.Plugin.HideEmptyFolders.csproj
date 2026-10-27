@@ -13,7 +13,7 @@
     <EmbeddedResource Include="Configuration/hideemptyfolders.js" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Jellyfin.Data" Version="12.2.0" />
+    <PackageReference Include="Jellyfin.Data" Version="12.4.0" />
     <PackageReference Include="Jellyfin.Controller" Version="12.2.0" />
   </ItemGroup>
   <ItemGroup>
