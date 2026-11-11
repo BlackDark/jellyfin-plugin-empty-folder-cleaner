@@ -8,15 +8,11 @@ namespace Jellyfin.Plugin.HideEmptyFolders;
 
 public sealed class IgnoreFileCache
 {
-    private sealed record CacheEntry(
-        FrozenSet<string> videoExtensions,
-        string[] scanFolders);
-
     private volatile CacheEntry? _cache;
 
     public void Invalidate() => _cache = null;
 
-    public (FrozenSet<string>, string[]) GetOrBuild(PluginConfiguration config)
+    public (FrozenSet<string> VideoExtensions, string[] ScanFolders) GetOrBuild(PluginConfiguration config)
     {
         var cache = _cache;
 
@@ -35,6 +31,10 @@ public sealed class IgnoreFileCache
             _cache = cache = new CacheEntry(videoExtensions, scanFolders);
         }
 
-        return (cache.videoExtensions, cache.scanFolders);
+        return (cache.VideoExtensions, cache.ScanFolders);
     }
+
+    private sealed record CacheEntry(
+        FrozenSet<string> VideoExtensions,
+        string[] ScanFolders);
 }
