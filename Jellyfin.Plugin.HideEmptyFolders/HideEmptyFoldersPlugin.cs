@@ -29,7 +29,7 @@ namespace Jellyfin.Plugin.HideEmptyFolders
         /// <value>The instance.</value>
         public static HideEmptyFoldersPlugin? Instance { get; private set; }
 
-        public override Guid Id => new ("e3a1b2c4-1234-5678-9abc-def012345678");
+        public override Guid Id => new("e3a1b2c4-1234-5678-9abc-def012345678");
 
         /// <summary>
         /// Gets the name of the plugin.

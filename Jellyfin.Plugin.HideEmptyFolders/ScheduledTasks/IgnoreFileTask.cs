@@ -11,7 +11,7 @@ namespace Jellyfin.Plugin.HideEmptyFolders.ScheduledTasks
 {
     public class IgnoreFileTask(ILogger<IgnoreFileTask> logger, IgnoreFileCache ifs) : IScheduledTask
     {
-        private static readonly EnumerationOptions _videoSearchOptions = new ()
+        private static readonly EnumerationOptions _videoSearchOptions = new()
         {
             RecurseSubdirectories = true,
             MatchType = MatchType.Simple,
