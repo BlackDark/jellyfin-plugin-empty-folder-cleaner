@@ -15,6 +15,10 @@ on:
 
 jobs:
   call:
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/scan-codeql.yaml@5f6990aa467ae0a6b62c91ad0502e3e1a53117ce # master
     with:
       repository-name: jellyfin/jellyfin-plugin-template
