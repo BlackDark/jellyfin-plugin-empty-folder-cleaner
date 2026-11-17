@@ -15,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Setup .NET
         uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6
         with:
@@ -48,14 +50,14 @@ jobs:
         run: |-
           pushd _dist
           for file in ./*.zip; do
-            md5sum ${file#./} >> ${file%.*}.md5
-            sha256sum ${file#./} >> ${file%.*}.sha256
+            md5sum "${file#./}" >> "${file%.*}.md5"
+            sha256sum "${file#./}" >> "${file%.*}.sha256"
           done
           ls -l
           popd
       - name: Publish output artifacts
         id: publish-assets
-        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # zizmor: ignore[superfluous-actions] handles release and manual inputs consistently # v3.0.4
         with:
           prerelease: false
           fail_on_unmatched_files: true

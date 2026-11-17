@@ -1,30 +1,93 @@
 name: CI
-
 on:
   push:
     branches: [master]
-    paths-ignore:
-      - '**/*.md'
   pull_request:
-    branches: [master]
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - '**/*.md'
+  workflow_call:
   workflow_dispatch:
-
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+env:
+  # renovate: datasource=github-releases depName=rhysd/actionlint
+  ACTIONLINT_VERSION: "1.7.12"
+  # renovate: datasource=npm depName=renovate
+  RENOVATE_VERSION: "44.221.1"
 jobs:
+  changes:
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.areas.outputs.code }}
+      lint: ${{ steps.areas.outputs.lint }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - id: areas
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != pull_request ]; then
+            { echo "code=true"; echo "lint=true"; } >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          # NUL-delimited: any filename is classified whole
+          git diff --no-renames --name-only -z HEAD^1 HEAD > "$RUNNER_TEMP/changed-paths"
+          code=false
+          lint=false
+          while IFS= read -r -d '' path; do
+            case "$path" in
+              docs/* | *.md | LICENSE) ;;
+              .github/workflows/ci.yml) code=true; lint=true ;;
+              .github/* | renovate.json | renovate.json5) lint=true ;;
+              *) code=true ;;
+            esac
+          done < "$RUNNER_TEMP/changed-paths"
+          { echo "code=$code"; echo "lint=$lint"; } >> "$GITHUB_OUTPUT"
   build:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/build.yaml@5ebf9f9455736773ab6f94cdb19fb903ece41b83
     with:
-      dotnet-version: "11.0.x"
+      dotnet-version: "10.0.x"
       dotnet-target: "net10.0"
-
   test:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     uses: jellyfin/jellyfin-meta-plugins/.github/workflows/test.yaml@5ebf9f9455736773ab6f94cdb19fb903ece41b83
-
+  lint:
+    needs: changes
+    if: needs.changes.outputs.lint == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          gh release download "v${ACTIONLINT_VERSION}" --repo rhysd/actionlint --pattern "$archive"
+          gh attestation verify "$archive" --repo rhysd/actionlint
+          tar -xzf "$archive" actionlint
+          ./actionlint -color
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.1
+          package-manager-cache: false
+      - run: npx --yes --package "renovate@${RENOVATE_VERSION}" -- renovate-config-validator --strict
+      - uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          inputs: .github/workflows
+          advanced-security: false
+          annotations: true
   check:
     if: always()
-    needs: [build, test]
+    needs: [changes, build, test, lint]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
